@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"log"
 )
 
 func main() {
@@ -30,22 +31,19 @@ func main() {
 func runHost(ip string) {
 	listen, listenErr := net.Listen("tcp", ip)
 	if listenErr != nil {
-		fmt.Println("Error:", listenErr)
-		os.Exit(1)
+		log.Fatal("Error:",listenErr)
 	}
 	//Accept method returns a conn object
 	conn, acceptErr := listen.Accept()
 	if acceptErr != nil {
-		fmt.Println("Error:", acceptErr)
-		os.Exit(1)
+		log.Fatal("Error:", acceptErr)
 	}
 	//create a reader interface
 	reader := bufio.NewReader(conn)
 	//convert to string
 	message, readErr := reader.ReadString('\n') // \n = enter key
 	if readErr != nil {
-		fmt.Println("Error:", readErr)
-		os.Exit(1)
+		log.Fatal("Error", readErr)
 	}
 	fmt.Println("message received:", message)
 }
@@ -54,15 +52,13 @@ func runGuest(ip string) {
 	//connect to host
 	conn, dialErr := net.Dial("tcp", ip)
 	if dialErr != nil {
-		fmt.Println("Error:",dialErr)
-		os.Exit(1)
+		log.Fatal("Error:",dialErr)
 	}
 	fmt.Print("Send message:")
 	reader:=bufio.NewReader(os.Stdin)
 	message, readErr:=reader.ReadString('\n')
 	if readErr != nil {
-		fmt.Println("Error:",readErr)
-		os.Exit(1)
+		log.Fatal("Error", readErr)
 	}
 	fmt.Fprint(conn, message)
 
