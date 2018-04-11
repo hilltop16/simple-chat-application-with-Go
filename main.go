@@ -1,11 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
-	"os"
 	"net"
-	"bufio"
+	"os"
 )
 
 func main() {
@@ -27,31 +27,43 @@ func main() {
 	}
 }
 
-
 func runHost(ip string) {
-	listen, listenErr :=net.Listen("tcp", ip)
+	listen, listenErr := net.Listen("tcp", ip)
 	if listenErr != nil {
-		fmt.Println("Error:",listenErr)
+		fmt.Println("Error:", listenErr)
 		os.Exit(1)
 	}
 	//Accept method returns a conn object
-	conn, acceptErr:=listen.Accept()
+	conn, acceptErr := listen.Accept()
 	if acceptErr != nil {
-		fmt.Println("Error:",acceptErr)
+		fmt.Println("Error:", acceptErr)
 		os.Exit(1)
 	}
 	//create a reader interface
-	reader:=bufio.NewReader(conn)
+	reader := bufio.NewReader(conn)
 	//convert to string
-	message, readErr:=reader.ReadString('\n') // \n = enter key
+	message, readErr := reader.ReadString('\n') // \n = enter key
+	if readErr != nil {
+		fmt.Println("Error:", readErr)
+		os.Exit(1)
+	}
+	fmt.Println("message received:", message)
+}
+
+func runGuest(ip string) {
+	//connect to host
+	conn, dialErr := net.Dial("tcp", ip)
+	if dialErr != nil {
+		fmt.Println("Error:",dialErr)
+		os.Exit(1)
+	}
+	fmt.Print("Send message:")
+	reader:=bufio.NewReader(os.Stdin)
+	message, readErr:=reader.ReadString('\n')
 	if readErr != nil {
 		fmt.Println("Error:",readErr)
 		os.Exit(1)
 	}
-	fmt.Println(message)
-
-}
-
-func runGuest(ip string) {
+	fmt.Fprint(conn, message)
 
 }
