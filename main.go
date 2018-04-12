@@ -65,12 +65,15 @@ func runGuest(ip string) {
 	if dialErr != nil {
 		log.Fatal("Error:",dialErr)
 	}
-	fmt.Print("Send message:")
-	reader:=bufio.NewReader(os.Stdin)
-	message, readErr:=reader.ReadString('\n')
-	if readErr != nil {
-		log.Fatal("Error", readErr)
+	for {
+		fmt.Print("Send message:")
+		reader:=bufio.NewReader(os.Stdin)
+		message, readErr:=reader.ReadString('\n')
+		if readErr != nil {
+			log.Fatal("Error", readErr)
+		}
+		fmt.Fprint(conn, message)
 	}
-	fmt.Fprint(conn, message)
+
 
 }
