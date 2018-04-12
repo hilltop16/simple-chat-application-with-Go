@@ -65,4 +65,11 @@ func handleGuest(conn net.Conn) {
 		log.Fatal("Error", readErr)
 	}
 	fmt.Fprint(conn, message)
+
+	replyReader:=bufio.NewReader(conn)
+	replyMessage, replyErr:= replyReader.ReadString('\n')
+	if replyErr != nil {
+		log.Fatal("Error:", replyErr)
+	}
+	fmt.Println("Message received:", replyMessage)
 }
