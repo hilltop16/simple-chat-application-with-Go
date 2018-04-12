@@ -40,12 +40,23 @@ func runHost(ip string) {
 	}
 	//create a reader interface
 	reader := bufio.NewReader(conn)
-	//convert to string
-	message, readErr := reader.ReadString('\n') // \n = enter key
-	if readErr != nil {
-		log.Fatal("Error", readErr)
+	for {
+		//convert to string
+		message, readErr := reader.ReadString('\n') // \n = enter key
+		if readErr != nil {
+			log.Fatal("Error", readErr)
+		}
+		fmt.Println("message received:", message)
+
+
+		fmt.Printf("Send message:")
+		replyReader :=bufio.NewReader(os.Stdin)
+		replyMessage, replyReadErr:=replyReader.ReadString('\n')
+		if replyReadErr != nil {
+			log.Fatal("error:", readErr)
+		}
+		fmt.Fprint(conn, replyMessage)
 	}
-	fmt.Println("message received:", message)
 }
 
 func runGuest(ip string) {
